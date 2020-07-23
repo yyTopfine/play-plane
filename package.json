@@ -1,0 +1,25 @@
+{
+  "name": "play-plane",
+  "version": "1.0.0",
+  "description": "vue3 customRender demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "webpack-dev-server --open",
+    "build": "webpack"
+  },
+  "keywords": [
+    "vue3",
+    "customRender"
+  ],
+  "author": "topfounder",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@vue/runtime-core": "^3.0.0-rc.4"
+  }
+}
