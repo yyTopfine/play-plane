@@ -1,21 +1,39 @@
 /*
- * @Author: topfounder 
- * @Date: 2020-07-23 14:18:56 
+ * @Author: topfounder
+ * @Date: 2020-07-23 14:18:56
  * @Last Modified by: topfounder
- * @Last Modified time: 2020-07-23 15:32:03
+ * @Last Modified time: 2020-07-24 17:55:46
  */
 
-import {defineComponent,h} from '@vue/runtime-core'
+import { defineComponent, h, computed, ref } from "@vue/runtime-core";
+
+import StartPage from "./pages/startPage.js";
+import GamePage from "./pages/gamePage.js";
+
 //定义一个组件
 const App = defineComponent({
-    render(){
-        //创建一个圆（基于pixi）的虚拟节点
-        const vnode = h('circle',{x:180,y:330},[
-            h('circle',{x:100,y:200}),
-            'demo'
-        ])
-        return vnode
-    }
-})
+  setup() {
+    const curentPageName = ref("startPage");
 
-export default App
+    const pageComponent = computed(() => {
+      if (curentPageName.value === "startPage") {
+        return StartPage;
+      } else if (curentPageName.value === "gamePage") {
+        return GamePage;
+      }
+    });
+
+    return { curentPageName, pageComponent };
+  },
+  render(ctx) {
+    return h("Container", [
+      h(ctx.pageComponent, {
+        onChangePage(pageName) {
+          ctx.curentPageName = pageName;
+        },
+      }),
+    ]);
+  },
+});
+
+export default App;
