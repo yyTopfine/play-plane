@@ -2,7 +2,7 @@
  * @Author: topfounder
  * @Date: 2020-07-24 17:54:48
  * @Last Modified by: topfounder
- * @Last Modified time: 2020-07-24 18:53:00
+ * @Last Modified time: 2020-07-27 18:59:19
  */
 
 import { defineComponent, h, reactive } from "@vue/runtime-core";
@@ -12,18 +12,32 @@ import Plane from "../components/plane.js";
 import { useMovePlane } from "../utils/index.js";
 import Bullte from "../components/bullet.js";
 import bullet from "../components/bullet.js";
-import { attackHandle } from "../utils/index.js";
+import { attackHandle, collisiion } from "../utils/index.js";
+import Enemy from "../components/enemy.js";
+import { getGame } from "../runtime-canvas/game.js";
 
 export default defineComponent({
-  setup() {
+  setup(props, ctx) {
     //飞机位置
     const planInfo = reactive({
       x: 280,
       y: 600,
+      width: 258,
+      height: 364,
     });
 
     // 子弹
     const bulltes = reactive([]);
+
+    // 敌机位置
+    const enemys = reactive([
+      {
+        x: 10,
+        y: 10,
+        width: 308,
+        height: 207,
+      },
+    ]);
 
     // 飞机移动
     const { x, y } = useMovePlane(planInfo.x, planInfo.y);
@@ -33,12 +47,29 @@ export default defineComponent({
     // 发射子弹
     const attack = attackHandle(bulltes, planInfo);
 
-    return { planInfo, bulltes, attack };
+    const tickerHandle = () => {
+      enemys.forEach((enemy) => {
+        if (collisiion(enemy, planInfo)) {
+          getGame().ticker.remove(tickerHandle);
+          ctx.emit("ChangePage", "endPage");
+        }
+      });
+    };
+
+    getGame().ticker.add(tickerHandle);
+
+    return { planInfo, bulltes, attack, enemys };
   },
   render(ctx) {
     function bulltesComponents() {
       return ctx.bulltes.map((bullet) => {
         return h(Bullte, { x: bullet.x, y: bullet.y });
+      });
+    }
+
+    function enemyComponent() {
+      return ctx.enemys.map((enemy) => {
+        return h(Enemy, { x: enemy.x, y: enemy.y });
       });
     }
 
@@ -50,6 +81,7 @@ export default defineComponent({
         y: ctx.planInfo.y,
         onAttack: ctx.attack,
       }),
+      ...enemyComponent(),
     ]);
   },
 });

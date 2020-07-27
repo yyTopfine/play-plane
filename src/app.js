@@ -2,13 +2,14 @@
  * @Author: topfounder
  * @Date: 2020-07-23 14:18:56
  * @Last Modified by: topfounder
- * @Last Modified time: 2020-07-24 17:55:46
+ * @Last Modified time: 2020-07-27 18:24:34
  */
 
 import { defineComponent, h, computed, ref } from "@vue/runtime-core";
 
 import StartPage from "./pages/startPage.js";
 import GamePage from "./pages/gamePage.js";
+import EndPage from "./pages/endPage.js";
 
 //定义一个组件
 const App = defineComponent({
@@ -20,6 +21,8 @@ const App = defineComponent({
         return StartPage;
       } else if (curentPageName.value === "gamePage") {
         return GamePage;
+      } else if (curentPageName.value === "endPage") {
+        return EndPage;
       }
     });
 
@@ -29,6 +32,7 @@ const App = defineComponent({
     return h("Container", [
       h(ctx.pageComponent, {
         onChangePage(pageName) {
+          console.log("1", pageName);
           ctx.curentPageName = pageName;
         },
       }),
