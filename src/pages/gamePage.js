@@ -9,6 +9,10 @@ import { defineComponent, h, reactive } from "@vue/runtime-core";
 
 import Map from "../components/map.js";
 import Plane from "../components/plane.js";
+import { useMovePlane } from "../utils/index.js";
+import Bullte from "../components/bullet.js";
+import bullet from "../components/bullet.js";
+import { attackHandle } from "../utils/index.js";
 
 export default defineComponent({
   setup() {
@@ -18,31 +22,34 @@ export default defineComponent({
       y: 600,
     });
 
-    window.addEventListener("keydown", (e) => {
-      console.log(e.key);
-      const speed = 15;
-      switch (e.key) {
-        case "ArrowUp":
-          planInfo.y -= speed;
-          break;
-        case "ArrowDown":
-          planInfo.y += speed;
-          break;
-        case "ArrowRight":
-          planInfo.x += speed;
-          break;
-        case "ArrowLeft":
-          planInfo.x -= speed;
-          break;
-      }
-    });
+    // 子弹
+    const bulltes = reactive([]);
 
-    return { planInfo };
+    // 飞机移动
+    const { x, y } = useMovePlane(planInfo.x, planInfo.y);
+    planInfo.x = x;
+    planInfo.y = y;
+
+    // 发射子弹
+    const attack = attackHandle(bulltes, planInfo);
+
+    return { planInfo, bulltes, attack };
   },
   render(ctx) {
+    function bulltesComponents() {
+      return ctx.bulltes.map((bullet) => {
+        return h(Bullte, { x: bullet.x, y: bullet.y });
+      });
+    }
+
     return h("Container", [
       h(Map),
-      h(Plane, { x: ctx.planInfo.x, y: ctx.planInfo.y }),
+      ...bulltesComponents(),
+      h(Plane, {
+        x: ctx.planInfo.x,
+        y: ctx.planInfo.y,
+        onAttack: ctx.attack,
+      }),
     ]);
   },
 });
