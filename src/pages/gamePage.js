@@ -2,7 +2,7 @@
  * @Author: topfounder
  * @Date: 2020-07-24 17:54:48
  * @Last Modified by: topfounder
- * @Last Modified time: 2020-07-27 18:59:19
+ * @Last Modified time: 2020-07-28 16:01:53
  */
 
 import { defineComponent, h, reactive } from "@vue/runtime-core";
@@ -40,12 +40,12 @@ export default defineComponent({
     ]);
 
     // 飞机移动
-    const { x, y } = useMovePlane(planInfo.x, planInfo.y);
+    const { x, y } = useMovePlane(planInfo.x, planInfo.y, 5);
     planInfo.x = x;
     planInfo.y = y;
 
     // 发射子弹
-    const attack = attackHandle(bulltes, planInfo);
+    const attack = attackHandle(bulltes, planInfo,enemys);
 
     const tickerHandle = () => {
       enemys.forEach((enemy) => {
@@ -60,6 +60,7 @@ export default defineComponent({
 
     return { planInfo, bulltes, attack, enemys };
   },
+
   render(ctx) {
     function bulltesComponents() {
       return ctx.bulltes.map((bullet) => {
